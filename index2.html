@@ -17,8 +17,44 @@
       margin-bottom: 20px;
     }
 
-    .form-group {
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #ddd;
       margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 12px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+      border-radius: 12px 12px 0 0;
+      margin-right: 5px;
+    }
+
+    .tab.active {
+      background: #4CAF50;
+      color: #fff;
+    }
+
+    .tab:hover:not(.active) {
+      background: #e0e0e0;
+    }
+
+    /* Content */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
     }
 
     input {
@@ -28,42 +64,13 @@
       border-radius: 12px;
       outline: none;
       transition: 0.3s;
-      width: 200px;
+      width: 220px;
+      margin-bottom: 15px;
     }
 
     input:focus {
       border-color: #4CAF50;
       box-shadow: 0 0 8px rgba(76,175,80,0.3);
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 12px;
-      margin-right: 10px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .btn-hitung {
-      background: #4CAF50;
-      color: #fff;
-    }
-    .btn-hitung:hover {
-      background: #45a049;
-    }
-
-    .btn-reset {
-      background: #f44336;
-      color: #fff;
-    }
-    .btn-reset:hover {
-      background: #d32f2f;
-    }
-
-    .hasil-box {
-      margin-top: 20px;
     }
 
     .hasil {
@@ -80,46 +87,85 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    .btn-reset {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      background: #f44336;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-reset:hover {
+      background: #d32f2f;
+    }
   </style>
 </head>
 <body>
   <h2>Kalkulator Persentase</h2>
-  
-  <div class="form-group">
-    <input type="number" id="angka" placeholder="Masukkan angka">
+
+  <!-- Tab Menu -->
+  <div class="tabs">
+    <div class="tab active" onclick="openTab('tab75', 0.75)">Hitung 75%</div>
+    <div class="tab" onclick="openTab('tab50', 0.5)">Hitung 50%</div>
   </div>
 
-  <div class="form-group">
-    <button class="btn-hitung" onclick="hitung(0.75)">Hitung 75%</button>
-    <button class="btn-hitung" onclick="hitung(0.5)">Hitung 50%</button>
-    <button class="btn-reset" onclick="resetForm()">Reset</button>
+  <!-- Tab 75% -->
+  <div id="tab75" class="tab-content active">
+    <input type="number" id="input75" placeholder="Masukkan angka">
+    <p>Hasil 75%: <span id="hasil75" class="hasil">-</span></p>
+    <button class="btn-reset" onclick="resetInput('input75','hasil75')">Reset</button>
   </div>
 
-  <div class="hasil-box">
-    <p>Hasil: <span id="hasil" class="hasil">-</span></p>
+  <!-- Tab 50% -->
+  <div id="tab50" class="tab-content">
+    <input type="number" id="input50" placeholder="Masukkan angka">
+    <p>Hasil 50%: <span id="hasil50" class="hasil">-</span></p>
+    <button class="btn-reset" onclick="resetInput('input50','hasil50')">Reset</button>
   </div>
 
   <script>
-    const input = document.getElementById("angka");
-    const hasilEl = document.getElementById("hasil");
+    const tabs = document.querySelectorAll(".tab");
+    const contents = document.querySelectorAll(".tab-content");
 
-    function hitung(persen) {
-      let angka = parseFloat(input.value);
-      if (isNaN(angka)) {
-        hasilEl.textContent = "-";
-        hasilEl.classList.remove("show");
-      } else {
-        let hasil = (angka * persen).toFixed(2);
-        hasilEl.textContent = hasil;
-        hasilEl.classList.add("show");
-      }
+    function openTab(tabId, persen) {
+      // tab aktif
+      tabs.forEach(t => t.classList.remove("active"));
+      event.target.classList.add("active");
+
+      // konten aktif
+      contents.forEach(c => c.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+
+      // update event input sesuai tab
+      let inputEl = document.querySelector(`#${tabId} input`);
+      let hasilEl = document.querySelector(`#${tabId} .hasil`);
+
+      inputEl.addEventListener("input", () => {
+        let angka = parseFloat(inputEl.value);
+        if (isNaN(angka)) {
+          hasilEl.textContent = "-";
+          hasilEl.classList.remove("show");
+        } else {
+          let hasil = (angka * persen).toFixed(2);
+          hasilEl.textContent = hasil;
+          hasilEl.classList.add("show");
+        }
+      });
     }
 
-    function resetForm() {
-      input.value = "";
+    function resetInput(inputId, hasilId) {
+      document.getElementById(inputId).value = "";
+      let hasilEl = document.getElementById(hasilId);
       hasilEl.textContent = "-";
       hasilEl.classList.remove("show");
     }
+
+    // inisialisasi tab default (75%)
+    openTab('tab75', 0.75);
   </script>
 </body>
 </html>
