@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="images.png">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Profit Per Hari</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f3f4f6;
+        padding: 20px;
+    }
+    .tab-menu {
+        display: flex;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #ddd;
+    }
+    .tab-menu button {
+        flex: 1;
+        padding: 10px;
+        background: #e5e7eb;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.2s;
+    }
+    .tab-menu button.active {
+        background: #4f46e5;
+        color: white;
+        font-weight: bold;
+    }
+    .tab-menu button:hover:not(.active) {
+        background: #d1d5db;
+    }
+    .tab-content {
+        display: none;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        margin-top: 10px;
+    }
+    .tab-content.active {
+        display: block;
+    }
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 4px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    .result {
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    .positive {
+        color: green;
+    }
+    .negative {
+        color: red;
+    }
+    .reset-btn {
+        margin-top: 15px;
+        width: 100%;
+        padding: 8px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    .reset-btn:hover {
+        background: #dc2626;
+    }
+</style>
+</head>
+<body>
+
+<h2 style="text-align:center">Kalkulator Profit Per Hari</h2>
+
+<div class="tab-menu">
+    <button class="active" onclick="showTab('once')">Sekali Panen</button>
+    <button onclick="showTab('regrow')">Regrow</button>
+</div>
+
+<!-- Sekali Panen -->
+<div id="once" class="tab-content active">
+    <label>Harga Bibit (g)</label>
+    <input type="number" id="seedPriceOnce" placeholder="Masukkan harga bibit" oninput="calculateOnce()">
+
+    <label>Harga Jual (g)</label>
+    <input type="number" id="sellPriceOnce" placeholder="Masukkan harga jual" oninput="calculateOnce()">
+
+    <label>Masa Tumbuh (hari)</label>
+    <input type="number" id="growDaysOnce" placeholder="Masukkan masa tumbuh" oninput="calculateOnce()">
+
+    <div id="resultOnce" class="result"></div>
+
+    <button class="reset-btn" onclick="resetOnce()">Reset</button>
+</div>
+
+<!-- Regrow -->
+<div id="regrow" class="tab-content">
+    <label>Harga Bibit (g)</label>
+    <input type="number" id="seedPriceRegrow" placeholder="Masukkan harga bibit" oninput="calculateRegrow()">
+
+    <label>Harga Jual (g)</label>
+    <input type="number" id="sellPriceRegrow" placeholder="Masukkan harga jual" oninput="calculateRegrow()">
+
+    <label>Masa Tumbuh Awal (hari)</label>
+    <input type="number" id="growDaysRegrow" placeholder="Masukkan masa tumbuh awal" oninput="calculateRegrow()">
+
+    <label>Waktu Regrow (hari)</label>
+    <input type="number" id="regrowDays" placeholder="Masukkan waktu regrow" oninput="calculateRegrow()">
+
+    <label>Total Hari Tanam</label>
+    <input type="number" id="totalDaysRegrow" placeholder="Masukkan total hari tanam" oninput="calculateRegrow()">
+
+    <div id="resultRegrow" class="result"></div>
+
+    <button class="reset-btn" onclick="resetRegrow()">Reset</button>
+</div>
+
+<script>
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-menu button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+
+        document.querySelector(`.tab-menu button[onclick="showTab('${tabId}')"]`).classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    function calculateOnce() {
+        const seed = parseFloat(document.getElementById("seedPriceOnce").value) || 0;
+        const sell = parseFloat(document.getElementById("sellPriceOnce").value) || 0;
+        const days = parseFloat(document.getElementById("growDaysOnce").value) || 0;
+
+        if (days <= 0) {
+            document.getElementById("resultOnce").innerHTML = "";
+            return;
+        }
+
+        const totalProfit = sell - seed;
+        const profitPerDay = totalProfit / days;
+
+        document.getElementById("resultOnce").innerHTML = `
+            💰 Profit per Hari: <span class="${profitPerDay >= 0 ? 'positive' : 'negative'}">${profitPerDay.toFixed(2)}g</span><br>
+            📦 Total Profit: <span class="${totalProfit >= 0 ? 'positive' : 'negative'}">${totalProfit.toFixed(2)}g</span>
+        `;
+    }
+
+    function calculateRegrow() {
+        const seed = parseFloat(document.getElementById("seedPriceRegrow").value) || 0;
+        const sell = parseFloat(document.getElementById("sellPriceRegrow").value) || 0;
+        const growInitial = parseFloat(document.getElementById("growDaysRegrow").value) || 0;
+        const regrowDays = parseFloat(document.getElementById("regrowDays").value) || 0;
+        const totalDays = parseFloat(document.getElementById("totalDaysRegrow").value) || 0;
+
+        if (totalDays <= 0 || growInitial <= 0 || regrowDays <= 0) {
+            document.getElementById("resultRegrow").innerHTML = "";
+            return;
+        }
+
+        const totalHarvests = 1 + Math.floor((totalDays - growInitial) / regrowDays);
+        const totalRevenue = sell * totalHarvests;
+        const totalProfit = totalRevenue - seed;
+        const profitPerDay = totalProfit / totalDays;
+
+        document.getElementById("resultRegrow").innerHTML = `
+            💰 Profit per Hari: <span class="${profitPerDay >= 0 ? 'positive' : 'negative'}">${profitPerDay.toFixed(2)}g</span><br>
+            📦 Total Profit: <span class="${totalProfit >= 0 ? 'positive' : 'negative'}">${totalProfit.toFixed(2)}g</span><br>
+            🌱 Total Panen: ${totalHarvests} kali
+        `;
+    }
+
+    function resetOnce() {
+        document.getElementById("seedPriceOnce").value = "";
+        document.getElementById("sellPriceOnce").value = "";
+        document.getElementById("growDaysOnce").value = "";
+        document.getElementById("resultOnce").innerHTML = "";
+    }
+
+    function resetRegrow() {
+        document.getElementById("seedPriceRegrow").value = "";
+        document.getElementById("sellPriceRegrow").value = "";
+        document.getElementById("growDaysRegrow").value = "";
+        document.getElementById("regrowDays").value = "";
+        document.getElementById("totalDaysRegrow").value = "";
+        document.getElementById("resultRegrow").innerHTML = "";
+    }
+</script>
+
+</body>
+</html>
