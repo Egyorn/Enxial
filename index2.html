@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
- <link rel="icon" type="image/png" href="Image/logo02.webp">
+  <link rel="icon" type="image/png" href="Image/logo02.webp">
   <meta charset="UTF-8">
-  <title>Kalkulator 75%</title>
+  <title>Kalkulator Persentase</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -11,10 +11,16 @@
       background: #f9f9f9;
       color: #333;
     }
+
     h2 {
       color: #444;
       margin-bottom: 20px;
     }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
     input {
       padding: 10px 15px;
       font-size: 18px;
@@ -22,50 +28,98 @@
       border-radius: 12px;
       outline: none;
       transition: 0.3s;
+      width: 200px;
     }
+
     input:focus {
       border-color: #4CAF50;
       box-shadow: 0 0 8px rgba(76,175,80,0.3);
     }
-    #hasil {
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      margin-right: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-hitung {
+      background: #4CAF50;
+      color: #fff;
+    }
+    .btn-hitung:hover {
+      background: #45a049;
+    }
+
+    .btn-reset {
+      background: #f44336;
+      color: #fff;
+    }
+    .btn-reset:hover {
+      background: #d32f2f;
+    }
+
+    .hasil-box {
+      margin-top: 20px;
+    }
+
+    .hasil {
       font-weight: bold;
       font-size: 22px;
       color: #4CAF50;
       opacity: 0;
       transform: translateY(10px);
       transition: all 0.4s ease-in-out;
-      margin-top: 15px;
       display: inline-block;
     }
-    #hasil.show {
+
+    .hasil.show {
       opacity: 1;
       transform: translateY(0);
     }
   </style>
 </head>
 <body>
-  <h2>Kalkulator 75% dari Angka</h2>
-  <input type="number" id="angka" placeholder="Masukkan angka">
-  <p>Hasil: <span id="hasil">-</span></p>
+  <h2>Kalkulator Persentase</h2>
+  
+  <div class="form-group">
+    <input type="number" id="angka" placeholder="Masukkan angka">
+  </div>
+
+  <div class="form-group">
+    <button class="btn-hitung" onclick="hitung(0.75)">Hitung 75%</button>
+    <button class="btn-hitung" onclick="hitung(0.5)">Hitung 50%</button>
+    <button class="btn-reset" onclick="resetForm()">Reset</button>
+  </div>
+
+  <div class="hasil-box">
+    <p>Hasil: <span id="hasil" class="hasil">-</span></p>
+  </div>
 
   <script>
     const input = document.getElementById("angka");
     const hasilEl = document.getElementById("hasil");
 
-    input.addEventListener("input", () => {
+    function hitung(persen) {
       let angka = parseFloat(input.value);
       if (isNaN(angka)) {
         hasilEl.textContent = "-";
         hasilEl.classList.remove("show");
       } else {
-        let hasil = (angka * 0.75).toFixed(2);
+        let hasil = (angka * persen).toFixed(2);
         hasilEl.textContent = hasil;
         hasilEl.classList.add("show");
       }
-    });
+    }
+
+    function resetForm() {
+      input.value = "";
+      hasilEl.textContent = "-";
+      hasilEl.classList.remove("show");
+    }
   </script>
 </body>
 </html>
-
-
-
