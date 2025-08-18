@@ -164,8 +164,11 @@
     <label>Harga Bibit (g)</label>
     <input type="number" id="seedPriceRegrow" placeholder="Masukkan harga bibit" oninput="calculateRegrow()">
 
-    <label>Harga Jual (g)</label>
-    <input type="number" id="sellPriceRegrow" placeholder="Masukkan harga jual" oninput="calculateRegrow()">
+    <label>Harga Jual per Buah (g)</label>
+    <input type="number" id="sellPriceRegrow" placeholder="Masukkan harga jual per buah" oninput="calculateRegrow()">
+
+    <label>Jumlah Output per Panen (buah)</label>
+    <input type="number" id="outputPerHarvest" min="1" step="1" placeholder="Misal: 2 atau 3" oninput="calculateRegrow()">
 
     <label>Masa Tumbuh Awal (hari)</label>
     <input type="number" id="growDaysRegrow" placeholder="Masukkan masa tumbuh awal" oninput="calculateRegrow()">
@@ -215,7 +218,8 @@
 
     function calculateRegrow() {
         const seed = parseFloat(document.getElementById("seedPriceRegrow").value) || 0;
-        const sell = parseFloat(document.getElementById("sellPriceRegrow").value) || 0;
+        const sellPerFruit = parseFloat(document.getElementById("sellPriceRegrow").value) || 0;
+        const outputPerHarvest = Math.max(1, parseInt(document.getElementById("outputPerHarvest").value) || 1);
         const growInitial = parseFloat(document.getElementById("growDaysRegrow").value) || 0;
         const regrowDays = parseFloat(document.getElementById("regrowDays").value) || 0;
         const totalDays = parseFloat(document.getElementById("totalDaysRegrow").value) || 0;
@@ -228,15 +232,23 @@
             return;
         }
 
+        // Hitung jumlah panen
         const totalHarvests = 1 + Math.floor((totalDays - growInitial) / regrowDays);
-        const totalRevenue = sell * totalHarvests;
+        // Revenue per panen = harga per buah * jumlah buah per panen
+        const revenuePerHarvest = sellPerFruit * outputPerHarvest;
+        // Total revenue = revenue per panen * jumlah panen
+        const totalRevenue = revenuePerHarvest * totalHarvests;
+
         const totalProfit = totalRevenue - seed;
         const profitPerDay = totalProfit / totalDays;
+        const totalOutputFruits = outputPerHarvest * totalHarvests;
 
         resultEl.innerHTML = `
             💰 Profit per Hari: <span class="${profitPerDay >= 0 ? 'positive' : 'negative'}">${profitPerDay.toFixed(2)}g</span><br>
             📦 Total Profit: <span class="${totalProfit >= 0 ? 'positive' : 'negative'}">${totalProfit.toFixed(2)}g</span><br>
-            🌱 Total Panen: ${totalHarvests} kali
+            🌱 Total Panen: ${totalHarvests} kali<br>
+            🍇 Output per Panen: ${outputPerHarvest} buah<br>
+            🧺 Total Output: ${totalOutputFruits} buah
         `;
         resultEl.classList.add("show");
     }
@@ -252,6 +264,7 @@
     function resetRegrow() {
         document.getElementById("seedPriceRegrow").value = "";
         document.getElementById("sellPriceRegrow").value = "";
+        document.getElementById("outputPerHarvest").value = "";
         document.getElementById("growDaysRegrow").value = "";
         document.getElementById("regrowDays").value = "";
         document.getElementById("totalDaysRegrow").value = "";
@@ -262,4 +275,3 @@
 
 </body>
 </html>
-
