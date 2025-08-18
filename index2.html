@@ -111,6 +111,7 @@
   <div class="tabs">
     <div class="tab active" onclick="openTab('tab75', 0.75)">Hitung 75%</div>
     <div class="tab" onclick="openTab('tab50', 0.5)">Hitung 50%</div>
+    <div class="tab" onclick="openTab('tab80', 0.8)">Hitung 80%</div>
   </div>
 
   <!-- Tab 75% -->
@@ -125,6 +126,13 @@
     <input type="number" id="input50" placeholder="Masukkan angka">
     <p>Hasil 50%: <span id="hasil50" class="hasil">-</span></p>
     <button class="btn-reset" onclick="resetInput('input50','hasil50')">Reset</button>
+  </div>
+
+  <!-- Tab 80% -->
+  <div id="tab80" class="tab-content">
+    <input type="number" id="input80" placeholder="Masukkan angka">
+    <p>Hasil 80%: <span id="hasil80" class="hasil">-</span></p>
+    <button class="btn-reset" onclick="resetInput('input80','hasil80')">Reset</button>
   </div>
 
   <script>
